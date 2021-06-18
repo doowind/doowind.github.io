@@ -1,0 +1,302 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="renderer" content="webkit"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.0.0-rc.0" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.0.0-rc.0" type="image/png" sizes="32x32"><meta name="description" content="原文地址:http:&#x2F;&#x2F;www.redblobgames.com&#x2F;grids&#x2F;hexagons&#x2F;#line-drawing 六边形网格在一些游戏中被用到了,但并不像正方形网格那么直截了当的容易使用.我曾经手机了六边形网格相关的资源接近20年了,写这篇向导文章去探索那些最优美的方法,分析成最简洁风格的代码,主要是基于Charles Fu 和Clark Verbrugge向导.我将描述制作六边形网格的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Code-六边形网格">
+<meta property="og:url" content="http://doowind.com/2017/10/09/Code-%E5%85%AD%E8%BE%B9%E5%BD%A2%E7%BD%91%E6%A0%BC/index.html">
+<meta property="og:site_name" content="Doowind&#39;s Blog">
+<meta property="og:description" content="原文地址:http:&#x2F;&#x2F;www.redblobgames.com&#x2F;grids&#x2F;hexagons&#x2F;#line-drawing 六边形网格在一些游戏中被用到了,但并不像正方形网格那么直截了当的容易使用.我曾经手机了六边形网格相关的资源接近20年了,写这篇向导文章去探索那些最优美的方法,分析成最简洁风格的代码,主要是基于Charles Fu 和Clark Verbrugge向导.我将描述制作六边形网格的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center.png">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center2.png">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center3.png">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center4.png">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center5.png">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center5.5.png">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center6.png">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center7.png">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center8.png">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center9.png">
+<meta property="og:image" content="http://oceoyk9ry.bkt.clouddn.com/Center10.png">
+<meta property="article:published_time" content="2017-10-09T12:24:49.000Z">
+<meta property="article:modified_time" content="2017-10-10T03:31:30.000Z">
+<meta property="article:author" content="Doowind">
+<meta property="article:tag" content="code">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://oceoyk9ry.bkt.clouddn.com/Center.png"><meta name="keywords" content="Doowind, Doowind's Blog"><meta name="description" content=""><title>Code-六边形网格 | Doowind's Blog</title><link ref="canonical" href="http://doowind.com/2017/10/09/Code-%E5%85%AD%E8%BE%B9%E5%BD%A2%E7%BD%91%E6%A0%BC/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.0.0-rc.0"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":true,"scrollDownIcon":false},
+  postWidget: {"endText":true},
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":false},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 4.2.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner"><nav class="header-nav header-nav--fixed"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav><div class="header-banner"><div class="header-banner-info"><div class="header-banner-info__title">Doowind's Blog</div><div class="header-banner-info__subtitle">some code and other stuff</div></div></div></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">Code-六边形网格</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2017-10-09</span></span><span class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span class="post-meta-item__value">2017-10-10</span></span></div></header><div class="post-body"><p>原文地址:<span class="exturl"><a class="exturl__link"   href="http://www.redblobgames.com/grids/hexagons/#line-drawing"  target="_blank" rel="noopener">http://www.redblobgames.com/grids/hexagons/#line-drawing</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+<p>六边形网格在一些游戏中被用到了,但并不像正方形网格那么直截了当的容易使用.我曾经手机了六边形网格相关的资源接近20年了,写这篇向导文章去探索那些最优美的方法,分析成最简洁风格的代码,主要是基于Charles Fu 和Clark Verbrugge向导.我将描述制作六边形网格的各种各样的方式,它们之间的关系,就像一些常见的算法一样.该文中许多部分都是互相有关联的;选择一个类型的网格去更新图标,代码,和文本去匹配,感受不同类型网格对应的代码变化,以及他们的原理.</p>
+<a id="more"></a>
+<p>该文中的样例代码是用伪代码(pseudo-code)写出来的;它们是容易阅读和被理解的,所以你可以参照它们写出自己使用语言对应的实现代码.</p>
+
+        <h3 id="Geometry-几何学"   >
+          <a href="#Geometry-几何学" class="heading-link"><i class="fas fa-link"></i></a>Geometry 几何学</h3>
+      <p>六边形是六个边的多边形.规则的多边形的所有边都有着相同的长度.我将我们使用的多边形都假定是规则的.典型的六边形网格可以是纵向的 以及横向的.</p>
+<p>纵向的(左)跟横向的(右)如下图:</p>
+<p><img src="http://oceoyk9ry.bkt.clouddn.com/Center.png" alt="Center"></p>
+<p>六边形有六个边.每个边被两个六边形所共享.六边形有六个角.每个角被3个六边形共享.关于更多的关于中心,边缘,以及角相关的额内容,请看<span class="exturl"><a class="exturl__link"   href="http://www-cs-students.stanford.edu/~amitp/game-programming/grids/"  target="_blank" rel="noopener">网格部分文章</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span>.</p>
+
+        <h4 id="角度"   >
+          <a href="#角度" class="heading-link"><i class="fas fa-link"></i></a>角度</h4>
+      <p>在一个规则的六边形中,内角都是120度.里面可以容纳六个三角形楔形物,每个等边三角形内角都是60度.角i在坐标系中对应的弧度是(60*i),  size对应的是从中心点到六边形各个角顶点的距离.代码如下:</p>
+<p><img src="http://oceoyk9ry.bkt.clouddn.com/Center2.png" alt="Center"></p>
+<pre><code>function hex_corner(center, size, i):
+    var angle_deg = 60 * i
+  var angle_rad = PI / 180 * angle_deg
+  return Point(center.x + size * cos(angle_rad),
+  center.y + size * sin(angle_rad))</code></pre><p>填充一个六边形,通过hex_corner函数进行六个顶点的计算.要画六边形,则使用计算出来的这些顶点进行画线操作即可.</p>
+<p>横向与纵向模式下的区别是x跟y换掉了.横向模式下,角度是:0,60,120,180,240,300</p>
+<p>纵向模式下角度是:30,90,150,210,270,330.</p>
+
+        <h4 id="大小和跨距"   >
+          <a href="#大小和跨距" class="heading-link"><i class="fas fa-link"></i></a>大小和跨距</h4>
+      <p><img src="http://oceoyk9ry.bkt.clouddn.com/Center3.png" alt="Center"></p>
+<p>下一步,我们想把几个六边形放在一起研究.在横向模式下,一个六边形的宽度=2<em>size.两个邻接的六边形在x轴方向上两个邻接六边形中心点间距离=size</em>3/2.</p>
+<p>六边形的高度=size<em>sqrt(3),y轴上两个邻接六边形中心间的距离也是等于size</em>sqrt(3).</p>
+<p>一些游戏中使用像素艺术去生成六边形,它们准确的说是不匹配咱们几何中所说的六边形的.我在这里描述的角度和跨度公式是没有办法为你的六边形进行计算.剩下的篇幅中,将描述在六边形网格中的算法,即使你的六边形是被拉伸或者收缩过的情况下也是可以工作的.</p>
+
+        <h3 id="Coordinate-Systems-坐标系统"   >
+          <a href="#Coordinate-Systems-坐标系统" class="heading-link"><i class="fas fa-link"></i></a>Coordinate Systems  坐标系统</h3>
+      <p>现在让我们假定六边形放在网格中.四四方方的网格中,有一种很明显的方式可以去实现它.对于六边形,可以有多种实现方法.我推荐使用立体坐标系统作为主要的表现方式.使用坐标轴或者偏移坐标量来实现地图存储,展示坐标给使用者.</p>
+
+        <h4 id="Offset-coordinates-偏移量坐标"   >
+          <a href="#Offset-coordinates-偏移量坐标" class="heading-link"><i class="fas fa-link"></i></a>Offset coordinates 偏移量坐标</h4>
+      <p>最常见的方法是偏移所有的行或者列.列 命名为col 或者q.  行 命名为row 或者r.你可以偏移奇数或者偶数列或者行,所以每个横向或者纵向的上的六边形都有两个变量来记录位置.</p>
+<p><img src="http://oceoyk9ry.bkt.clouddn.com/Center4.png" alt="Center"></p>
+
+        <h4 id="Cube-coordinates立体坐标"   >
+          <a href="#Cube-coordinates立体坐标" class="heading-link"><i class="fas fa-link"></i></a>Cube coordinates立体坐标</h4>
+      <p>另一种方式可以在三个主坐标轴下布置六边形,不像之前在方形网格中有两个轴那样.这种坐标下有个更优美的对称性.</p>
+<p><img src="http://oceoyk9ry.bkt.clouddn.com/Center5.png" alt="Center"></p>
+<p>我们采用一个立体网格,然后用x+y+x = 0 切割对角线平面.这是一个怪异的想法,但是它确实帮助我们使得六边形网格算法更简单一些.特别是,我们可以重用笛卡尔坐标系统中的标准操作:坐标相加,坐标相减,坐标乘除法缩放操作等.</p>
+<p>注意立体坐标中的三个主轴,观察它们是如何与六个六边形对角线方向上进行通信的;对角线网格轴如何跟六边形网格方向交互的.</p>
+<p>因为我们已经在正方形以及立体网格中实现过的一些算法,立体坐标系统允许我们修改下算法就可以应用上六边形网格了(也就是转换一下坐标).我将打算在本页中的算法中都使用这个坐标系统.如果之前有算法使用其他的坐标系统的话,我将转换坐标们转换为立体坐标,运行那个算法.运行完了,再转换回去.</p>
+<p>学习三维坐标是如何工作在六边形网格中.选择下图中的一个六边形 将高亮三维坐标系统中对应的坐标哟.具体看原文的下图:<br><span class="exturl"><a class="exturl__link"   href="http://www.redblobgames.com/grids/hexagons/"  target="_blank" rel="noopener">http://www.redblobgames.com/grids/hexagons/</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+<p><img src="http://oceoyk9ry.bkt.clouddn.com/Center5.5.png" alt="Center"></p>
+<ul>
+<li><p>在立体网格中的每个方向都对应六边形网格中的一条线.尝试高亮z值为0,1,2,3的一个六边形,然后观察他们是怎么关联的.行row被标记为蓝色.同样尝试x(绿色)以及y(紫色).</p>
+</li>
+<li><p>六边形网格中的每个方向都跟立体网格中的两个方向有关联.例如,六边形网格北边在+y和-z之间的区域,所以往北每走一步都会让y+1,z-1.</p>
+</li>
+</ul>
+<p>立体坐标系统对于六边形问你哥哥坐标系统来说是个挺合理的选择.由于限制x+y+z=0 ,所以算法必须保持那样.这个限制可以确保对于每个六边形都有一个笛卡尔坐标可以对应.</p>
+<p>有许多不同的有效的三维六边形坐标系统.有的会限制为x+y+z=0.我已经在许多系统中试过的唯一一种.你也可以去使用x-y,y-z,z-x去限制三位坐标系统,那样它将有自己独有的有趣的我之前没有探索过的属性集.</p>
+<p>可能你会说,”Amit,但是我想去存储三个数字的坐标.我不知道那样的方式下该怎样去存储一个地图”.</p>
+
+        <h3 id="Axial-coordinates-轴坐标"   >
+          <a href="#Axial-coordinates-轴坐标" class="heading-link"><i class="fas fa-link"></i></a>Axial coordinates 轴坐标</h3>
+      <p>二维轴坐标系统,有时候也可称为梯度坐标,构建方法是从三维立体坐标系统中取出两个来进行组建的.因为我们在立体坐标中的那个限制x+y+z=0 中,第三个坐标是冗余的.二维轴坐标对于地图存储和显示坐标来说是足够有用了.像三维立体坐标系统,你可以用笛卡尔坐标系统中的标准的加,减,乘,除操作.</p>
+<p>有许多的立体坐标系统,以及许多坐标轴系统.我可不打算在文章中去展示所有的关联.我打算挑两种去解释,q=x,r=z.你可以把q想成列,r想成行.</p>
+<p>好处就是这样的坐标系统在偏移网格上算法分析运算都是非常干净的.坏处嘛,存储直角坐标系中的地图的化看起来会有那么一点点怪咯;细节请看<span class="exturl"><a class="exturl__link"   href="http://www.redblobgames.com/grids/hexagons/#map-storage"  target="_blank" rel="noopener">地图存储处理</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span>这里.有一些算法甚至是比三维立体坐标上都表现的干净,但是对于那些,因为我们曾经限制x+y+z=0 ,所以我们可以计算出第三个隐式坐标并且使用它,只是为了那些必须要用到第三个坐标的算法.</p>
+
+        <h4 id="Axes-轴"   >
+          <a href="#Axes-轴" class="heading-link"><i class="fas fa-link"></i></a>Axes 轴</h4>
+      <p>偏移坐标系统是人们最常向导的,因为它跟人们认知中二维方形网格中的笛卡尔坐标系统相似.不幸的是坐标轴的方向却和我们习惯的数学坐标轴方向有些不同,使得问题又有些复杂了.三为立体坐标系统和坐标轴偏移系统沿着轴的方向,就可以得到简单的算法实现,但是对于地图存储则会变得复杂了些.也有其他的坐标系统,也被称为交错的或者是重复的,我还没有探索这块;有的人说它工作起来会比三维立体坐标系统和轴坐标系统更容易.有机会看看去.</p>
+<p><img src="http://oceoyk9ry.bkt.clouddn.com/Center6.png" alt="Center"></p>
+<p>轴是坐标增长的方向.垂直于轴的是一条直线,在它上面都是一个常量.上面展示的那些直线就是存有等值的等高线.上图那些绿线紫线.</p>
+
+        <h4 id="Coordinate-conversion-坐标转换"   >
+          <a href="#Coordinate-conversion-坐标转换" class="heading-link"><i class="fas fa-link"></i></a>Coordinate conversion  坐标转换</h4>
+      <p>你可能在你的工程中使用的是轴坐标或者偏移坐标,但是许多算法在三维立体坐标中表示出来才最简单.因此,你需要在各个坐标系统间进行转换.</p>
+<p>轴坐标系统跟立体系统坐标是最接近的,所以转换起来也非常容易:</p>
+<pre><code># convert cube to axial
+q = x
+r = z
+# convert axial to cube
+x = q
+z = r
+y = -x-z
+
+# 代码中,这两个函数可以写成这样:
+
+function cube_to_hex(h): # axial
+    var q = h.x
+  var r = h.z
+  return Hex(q, r)
+
+function hex_to_cube(h): # axial
+  var x = h.q
+  var z = h.r
+  var y = -x-z
+  return Cube(x, y, z)</code></pre><p>偏移坐标系统是唯一有些复杂的:</p>
+<pre><code> # convert cube to even-q offset
+   col = x
+   row = z + (x + (x&amp;1)) / 2
+ # convert even-q offset to cube
+   x = col
+     z = row - (col + (col&amp;1)) / 2
+   y = -x-z
+ # convert cube to odd-q offset
+   col = x
+   row = z + (x - (x&amp;1)) / 2
+ # convert odd-q offset to cube
+   x = col
+   z = row - (col - (col&amp;1)) / 2
+   y = -x-z
+ # convert cube to even-r offset
+   col = x + (z + (z&amp;1)) / 2
+   row = z
+ # convert even-r offset to cube
+   x = col - (row + (row&amp;1)) / 2
+   z = row
+   y = -x-z
+# convert cube to odd-r offset
+   col = x + (z - (z&amp;1)) / 2
+   row = z
+# convert odd-r offset to cube
+   x = col - (row - (row&amp;1)) / 2
+   z = row
+   y = -x-z</code></pre><p>实现笔记:我使用a&amp;1而不是a%2来检测是否为奇数或者偶数.更细节的东西请<span class="exturl"><a class="exturl__link"   href="http://www.redblobgames.com/grids/hexagons/implementation.html#offset"  target="_blank" rel="noopener">看这里</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span>.</p>
+
+        <h3 id="Neighbors-邻居们"   >
+          <a href="#Neighbors-邻居们" class="heading-link"><i class="fas fa-link"></i></a>Neighbors   邻居们</h3>
+      <p>给定一个六边形,哪六个六边形是它的邻居嘞?正如你想的那样,答案跟在三维立体坐标中是一样简单,一直都是跟轴坐标中那样非常简单的,只有偏移坐标系统中会有些复杂.你可能还想去计算6个对角线方向上对应的六边形(后面看到图就知道什么意思了,说不清楚).</p>
+
+        <h4 id="三维立体坐标轴"   >
+          <a href="#三维立体坐标轴" class="heading-link"><i class="fas fa-link"></i></a>三维立体坐标轴</h4>
+      <p>在六边形坐标系统中移动,会导致三个坐标中的一个+1,一个-1(总和一定保持为0).有三种+1可能发生的场景,剩下的两个有一个可能会-1.总共6中可能的改变.每种都对应与六边形一个方向上.最简单最快的方法是预先计算出转换的这个表如下图,用的时候直接从这个表中取就好了:</p>
+<p><img src="http://oceoyk9ry.bkt.clouddn.com/Center7.png" alt="Center"></p>
+<pre><code>var directions = [
+    Cube(+1, -1,  0), Cube(+1,  0, -1), Cube( 0, +1, -1),
+    Cube(-1, +1,  0), Cube(-1,  0, +1), Cube( 0, -1, +1)
+]
+
+function cube_direction(direction):
+    return directions[direction]
+
+function cube_neighbor(hex, direction):
+    return cube_add(hex, cube_direction(direction))</code></pre>
+        <h4 id="Axial-coordinates-轴坐标系统"   >
+          <a href="#Axial-coordinates-轴坐标系统" class="heading-link"><i class="fas fa-link"></i></a>Axial coordinates 轴坐标系统</h4>
+      <p>正如之前的,我们将使用立体坐标系统作为起始点.根据这个表将(dx,dy,dz)转换为(dq,dr).</p>
+<p><img src="http://oceoyk9ry.bkt.clouddn.com/Center8.png" alt="Center"></p>
+<pre><code>var directions = [
+    Hex(+1,  0), Hex(+1, -1), Hex( 0, -1),
+    Hex(-1,  0), Hex(-1, +1), Hex( 0, +1)
+]
+
+function hex_direction(direction):
+    return directions[direction]
+
+function hex_neighbor(hex, direction):
+    var dir = hex_direction(direction)
+    return Hex(hex.q + dir.q, hex.r + dir.r)</code></pre>
+        <h4 id="Offset-coordinates-偏移坐标"   >
+          <a href="#Offset-coordinates-偏移坐标" class="heading-link"><i class="fas fa-link"></i></a>Offset coordinates  偏移坐标</h4>
+      <p>在偏移坐标系统中,这些改变决定于表格中我们已经给定的信息.如果当前正在偏移行或者列上时,规则是不同的,而不像在那些非偏移行列坐标系统中那样.</p>
+<p>正如上面所说的,我们将构建一个数字表去与给定的列号行号相加处理.然而这一次我们这里将有两个数组,一个是对于奇数列/行 使用的,一个是给偶数行/列用的.观察图表中(1,1)在你选择图中六个方向中的一个时它的变化情况.然后看(2,2).这个表格以及对应的代码对于四种表格类型是各不相同的,挑选一种类型观察一下吧.</p>
+<p><img src="http://oceoyk9ry.bkt.clouddn.com/Center9.png" alt="Center"></p>
+<p>用上面查找表是计算邻居最简单的方式了.对于那些你感觉奇怪的数字,可以在<span class="exturl"><a class="exturl__link"   href="http://www.redblobgames.com/grids/hexagons/derive-hex-neighbor-formula.html"  target="_blank" rel="noopener">这里</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span>了解下.</p>
+
+        <h3 id="Diagonals-对角线上的"   >
+          <a href="#Diagonals-对角线上的" class="heading-link"><i class="fas fa-link"></i></a>Diagonals 对角线上的</h3>
+      <p>在六边形坐标系统中,移动到一个对角线指定的位置上的六边形上时,三个坐标中有一个要或+2或-2,其他的两个则都-1或+1.</p>
+<pre><code>var diagonals = [
+    Cube(+2, -1, -1), Cube(+1, +1, -2), Cube(-1, +2, -1),
+    Cube(-2, +1, +1), Cube(-1, -1, +2), Cube(+1, -2, +1)
+]
+function cube_diagonal_neighbor(hex, direction):
+    return cube_add(hex, diagonals[direction])</code></pre><p>跟之前的一样,你可以消去坐标中的某一维实现向轴坐标的转换,或者通过与计算出来的矩阵表转换为偏移坐标系统坐标.</p>
+
+        <h3 id="Distances-距离"   >
+          <a href="#Distances-距离" class="heading-link"><i class="fas fa-link"></i></a>Distances  距离</h3>
+      
+        <h4 id="Cube-coordinates-立体坐标系统"   >
+          <a href="#Cube-coordinates-立体坐标系统" class="heading-link"><i class="fas fa-link"></i></a>Cube coordinates 立体坐标系统</h4>
+      <p>在立体坐标系统中,每一个六边形都是三维的立方体. 在六边形图标中距离为1,而在立体坐标系中距离为2.这使得求距离是简单的.在平面坐标系中,曼哈顿距离=abs(dx)+abs(dy).在立方体坐标系中,曼哈顿距离=abs(dx)+abs(dy)+abs(dz).在六面体表格中距离是下面函数计算结果的一半:</p>
+<pre><code>function cube_distance(a, b):
+    return (abs(a.x - b.x) + abs(a.y - b.y) + abs(a.z - b.z)) / 2</code></pre><p>任何一个坐标中的三个维度中,其中一个必须是另外两个相加之和,然后票选出那个最大的和就是那个距离了.你可能喜欢分成两部分中的一份或者喜欢称为最大的那个(等于另外两个之和)的维度值作为距离,但是不论怎样,得出的结果都是相同的.</p>
+<pre><code>function cube_distance(a, b):
+    return max(abs(a.x - b.x), abs(a.y - b.y), abs(a.z - b.z))</code></pre><p>在图标中,最大值是被高亮出来了.也请注意每个颜色区域都指示除了6个对角方向中的一个方向.</p>
+
+        <h4 id="Axial-coordinates-轴坐标系统-1"   >
+          <a href="#Axial-coordinates-轴坐标系统-1" class="heading-link"><i class="fas fa-link"></i></a>Axial coordinates 轴坐标系统</h4>
+      <p>在轴坐标系统中,第三个维度是被隐藏起来了.可以转换轴坐标为立体坐标然后进行距离计算:</p>
+<pre><code>function hex_distance(a, b):
+    var ac = hex_to_cube(a)
+    var bc = hex_to_cube(b)
+    return cube_distance(ac, bc)</code></pre><p>如果你编译了内联函数hex_to_cube 和 cube_distance 的话,它将生成下面这段代码:</p>
+<pre><code>function hex_distance(a, b):
+    return (abs(a.q - b.q)
+    + abs(a.q + a.r - b.q - b.r)
+    + abs(a.r - b.r)) / 2</code></pre><p>有大量的不同方法去计算六边形在轴坐标系统中的距离,但是不论你选用哪种,轴坐标中六边形距离计算都是源于立方体坐标系统中曼哈顿距离的计算方式.例如,</p>
+
+        <h4 id="Offset-coordinates-偏移坐标系统"   >
+          <a href="#Offset-coordinates-偏移坐标系统" class="heading-link"><i class="fas fa-link"></i></a>Offset coordinates  偏移坐标系统</h4>
+      <p>同轴坐标系统中一样,我们将转换偏移坐标系统中的坐标为立体坐标系统中的立体坐标,然后使用立体坐标计算距离.</p>
+<pre><code>function offset_distance(a, b):
+    var ac = offset_to_cube(a)
+    var bc = offset_to_cube(b)
+    return cube_distance(ac, bc)</code></pre><p>我们将使用相同的模型到许多用到的算法中:转换六边形网格系统中的坐标为立体坐标系统中的坐标,然后在立体坐标系统中对应的算法,然后把计算出来的结果坐标再转换回去.</p>
+
+        <h4 id="Line-drawing-六边形间连线"   >
+          <a href="#Line-drawing-六边形间连线" class="heading-link"><i class="fas fa-link"></i></a>Line drawing  六边形间连线</h4>
+      <p>我们该怎样去画一条从一个六边形到另一个六边形的线呢?我使用了直线插补法去实现绘画.均匀平滑的画出了N+1个点间的线,并且计算出了当前位置是在哪个六边形中.</p>
+<p>1.首先我们需要计算两个终端节点之间的距离N.</p>
+<p>2.然后平滑下两个终端节点A和B之间的N+1个节点.使用线性插补法,从0到N个节点中,第i个点都对应的坐标都可以通过 A + (B - A) * 1.0/N * i 来计算得出.在图标中这些点用深色以及点描出.计算结果如图所示.</p>
+<p><img src="http://oceoyk9ry.bkt.clouddn.com/Center10.png" alt="Center"></p>
+<p>3.转换每个浮点型样例点坐标为整形的六边形坐标系统中的坐标.这个算法叫做<span class="exturl"><a class="exturl__link"   href="http://www.redblobgames.com/grids/hexagons/#rounding"  target="_blank" rel="noopener">cube_round</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span>.</p>
+<p>将这些放在一起就可以画出A到B的线了：</p>
+<pre><code>function cube_lerp(a, b, t):
+    return Cube(a.x + (b.x - a.x) * t,
+            a.y + (b.y - a.y) * t,
+            a.z + (b.z - a.z) * t)
+
+function cube_linedraw(a, b):
+    var N = cube_distance(a, b)
+    var results = []
+
+for each 0 ≤ i ≤ N:
+    results.append(cube_round(cube_lerp(a, b, 1.0/N * i)))</code></pre><p>更多注意:</p>
+<ul>
+<li><p>DDA算法在平面网格集中坐标轴方向上最大的距离就是N.</p>
+</li>
+<li><p>有时候如果你添加一个很小的值（1e-6,-2e-6级别的增量）到起始点到终点中的某一点的坐标上时，画出来的线将会看起来更加平滑连续。这样将在某个方向上推进线的延伸而且可以避免锐化的边缘出现。</p>
+</li>
+<li><p>cube_lerp函数需要通过浮点坐标返回一个立体坐标。如果你使用的静态类型语言的化，你不可以使用例题类型坐标但是你可以定义FloatCube浮点立体坐标，或者如果你想避免定义其他类型的话，你可以将画线函数中的函数内联。</p>
+</li>
+<li><p>你可以通过内联cube_lerp函数去优化这段代码，然后再循环外计算B.x-A.x,B.x-A.y,以及1.0/N。乘法操作可以转化为重复的加法运算。你可能在最后发现算法很像DDA算法了。</p>
+</li>
+<li><p>我使用的是轴坐标系统或者立体坐标系统中画线的，但是如果你想用其他的坐标系统的话，看一下这篇文章。</p>
+</li>
+</ul>
+</div><footer class="post-footer"><div class="post-ending ending"><div class="ending__text">------ 本文结束，感谢您的阅读 ------</div></div><div class="post-copyright copyright"><div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span class="copyright-author__value"><a href="http://doowind.com">Doowind</a></span></div><div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span class="copyright-link__value"><a href="http://doowind.com/2017/10/09/Code-%E5%85%AD%E8%BE%B9%E5%BD%A2%E7%BD%91%E6%A0%BC/">http://doowind.com/2017/10/09/Code-%E5%85%AD%E8%BE%B9%E5%BD%A2%E7%BD%91%E6%A0%BC/</a></span></div><div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="external nofollow" target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div></div><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://doowind.com/tags/code/">code</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/2018/01/25/Develop%20Of%20Unity%20Game%20-%20Card-Strategy/"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">Develop Of Unity Game - Card-Strategy</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/2016/08/23/Code-Lua-%E5%9F%BA%E7%A1%80-coroutine-%E5%8D%8F%E7%A8%8B/"><span class="paginator-prev__text">[Code] [转]Lua 基础 -- coroutine 协程</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Geometry-几何学"><span class="toc-number">1.</span> <span class="toc-text">
+          Geometry 几何学</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#角度"><span class="toc-number">1.1.</span> <span class="toc-text">
+          角度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#大小和跨距"><span class="toc-number">1.2.</span> <span class="toc-text">
+          大小和跨距</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Coordinate-Systems-坐标系统"><span class="toc-number">2.</span> <span class="toc-text">
+          Coordinate Systems  坐标系统</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Offset-coordinates-偏移量坐标"><span class="toc-number">2.1.</span> <span class="toc-text">
+          Offset coordinates 偏移量坐标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Cube-coordinates立体坐标"><span class="toc-number">2.2.</span> <span class="toc-text">
+          Cube coordinates立体坐标</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Axial-coordinates-轴坐标"><span class="toc-number">3.</span> <span class="toc-text">
+          Axial coordinates 轴坐标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Axes-轴"><span class="toc-number">3.1.</span> <span class="toc-text">
+          Axes 轴</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Coordinate-conversion-坐标转换"><span class="toc-number">3.2.</span> <span class="toc-text">
+          Coordinate conversion  坐标转换</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Neighbors-邻居们"><span class="toc-number">4.</span> <span class="toc-text">
+          Neighbors   邻居们</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#三维立体坐标轴"><span class="toc-number">4.1.</span> <span class="toc-text">
+          三维立体坐标轴</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Axial-coordinates-轴坐标系统"><span class="toc-number">4.2.</span> <span class="toc-text">
+          Axial coordinates 轴坐标系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Offset-coordinates-偏移坐标"><span class="toc-number">4.3.</span> <span class="toc-text">
+          Offset coordinates  偏移坐标</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Diagonals-对角线上的"><span class="toc-number">5.</span> <span class="toc-text">
+          Diagonals 对角线上的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Distances-距离"><span class="toc-number">6.</span> <span class="toc-text">
+          Distances  距离</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Cube-coordinates-立体坐标系统"><span class="toc-number">6.1.</span> <span class="toc-text">
+          Cube coordinates 立体坐标系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Axial-coordinates-轴坐标系统-1"><span class="toc-number">6.2.</span> <span class="toc-text">
+          Axial coordinates 轴坐标系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Offset-coordinates-偏移坐标系统"><span class="toc-number">6.3.</span> <span class="toc-text">
+          Offset coordinates  偏移坐标系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Line-drawing-六边形间连线"><span class="toc-number">6.4.</span> <span class="toc-text">
+          Line drawing  六边形间连线</span></a></li></ol></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/favicon-144x144.png" alt="avatar"></div><p class="sidebar-ov-author__text">some code and other stuff</p></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">22</div><div class="sidebar-ov-state-item__name">归档</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="/images/cc-by-nc-sa.svg"></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2021</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>Doowind</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v4.2.0</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.0.0-rc.0</span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="/js/utils.js?v=2.0.0-rc.0"></script><script src="/js/stun-boot.js?v=2.0.0-rc.0"></script><script src="/js/scroll.js?v=2.0.0-rc.0"></script><script src="/js/header.js?v=2.0.0-rc.0"></script><script src="/js/sidebar.js?v=2.0.0-rc.0"></script></body></html>
